@@ -4,17 +4,18 @@ stub = modal.Stub("stable-diffusion-webui")
 volume = modal.NetworkFileSystem.new().persisted("stable-diffusion-webui")
 
 @stub.function(
-    image=modal.Image.from_registry("nvidia/cuda:11.8.0-base-ubuntu22.04", add_python="3.11")
+    image=modal.Image.from_registry("nvidia/cuda:12.2.0-base-ubuntu22.04", add_python="3.11")
     .run_commands(
-        "apt-get update -y && \
-        apt-get install -y software-properties-common && \
-        apt-get update -y && \
+        "apt update -y && \
+        apt install -y software-properties-common && \
+        apt update -y && \
         add-apt-repository -y ppa:git-core/ppa && \
-        apt-get update -y && \
-        apt-get install -y git git-lfs && \
-        git --version && \
-        apt-get install -y aria2 libgl1 libglib2.0-0 wget && \
-        pip install numpy --pre torch torchvision torchaudio --force-reinstall --index-url https://download.pytorch.org/whl/nightly/cu118"
+        apt update -y && \
+        apt install -y git git-lfs && \
+        git --version  && \
+        apt install -y aria2 libgl1 libglib2.0-0 wget && \
+        pip install -q torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 torchtext==0.15.2 torchdata==0.6.1 --extra-index-url https://download.pytorch.org/whl/cu118 && \
+        pip install -q xformers==0.0.20 triton==2.0.0 packaging==23.1"
     ),
     network_file_systems={"/content/stable-diffusion-webui": volume},
     gpu="T4",
